@@ -27,26 +27,26 @@ function App() {
         <Route path="unauthorized" elemen={<Unauthorized />} />
 
         {/* Private Route */}
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth admin />}>
-            <Route path="/" element={<Home />} />
-          </Route>
-
-          <Route element={<RequireAuth admin />}>
-            <Route path="editor" element={<Editor />} />
-          </Route>
-
-          <Route element={<RequireAuth admin />}>
-            <Route path="admin" element={<Admin />} />
-          </Route>
-
-          <Route element={<RequireAuth admin />}>
-            <Route path="lounge" element={<Lounge />} />
-          </Route>
+        {/* <Route element={<PersistLogin />}> */}
+        <Route element={<RequireAuth admin />}>
+          <Route path="/" element={<Home />} />
         </Route>
 
-        <Route path="*" element={<Missing />} />
+        <Route element={<RequireAuth admin />}>
+          <Route path="editor" element={<Editor />} />
+        </Route>
+
+        <Route element={<RequireAuth admin />}>
+          <Route path="admin" element={<Admin />} />
+        </Route>
+
+        <Route element={<RequireAuth admin />}>
+          <Route path="lounge" element={<Lounge />} />
+        </Route>
       </Route>
+
+      <Route path="*" element={<Missing />} />
+      {/* </Route> */}
     </Routes >
   );
 }

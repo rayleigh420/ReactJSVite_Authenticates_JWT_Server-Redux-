@@ -6,9 +6,13 @@ import { useContext } from "react";
 import AuthContext from "../context/AuthProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { getError, getStatus, login } from "../features/users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext)
+    const dispath = useDispatch()
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,25 +21,30 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [pwd, setPwd] = useState('');
 
+    const status = useSelector(getStatus);
+    const error = useSelector(getError)
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Submit")
         try {
-            const response = await axios.post("/signIn",
-                {
-                    email: email,
-                    password: pwd
-                },
-                {
-                    withCredentials: true
-                }
-            );
-            console.log(response.data);
-            setAuth({
-                userName: response.data.userName,
-                email: response.data.email,
-                admin: response.data.admin,
-                accessToken: response.data.accessToken
-            })
+            dispath(login({ email: email, password: pwd }))
+            // const response = await axios.post("/signIn",
+            //     {
+            //         email: email,
+            //         password: pwd
+            //     },
+            //     {
+            //         withCredentials: true
+            //     }
+            // );
+            // console.log(response.data);
+            // setAuth({
+            //     userName: response.data.userName,
+            //     email: response.data.email,
+            //     admin: response.data.admin,
+            //     accessToken: response.data.accessToken
+            // })
             //clear state and controlled inputs
             //need value attrib on inputs for this
             setEmail('');
@@ -49,45 +58,51 @@ const Login = () => {
     }
 
     return (
-        <section>
-            <h1>Log In</h1>
-            <form onSubmit={handleSubmit}>
+        <>
+            {status == 'loading'
+                ? <p>Loading</p>
+                :
+                <section>
+                    <h1>Log In</h1>
+                    <form onSubmit={handleSubmit}>
 
-                <label htmlFor="confirm_pwd">
-                    Email:
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    required
-                />
+                        <label htmlFor="confirm_pwd">
+                            Email:
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            required
+                        />
 
-                <label htmlFor="password">
-                    Password:
-                </label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    onChange={(e) => setPwd(e.target.value)}
-                    value={pwd}
-                    required
-                />
+                        <label htmlFor="password">
+                            Password:
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            onChange={(e) => setPwd(e.target.value)}
+                            value={pwd}
+                            required
+                        />
 
-                <button>Sign In</button>
-            </form>
-            <p>
-                Need an Account?<br />
-                <span className="line">
-                    {/*put router link here*/}
-                    <a href="/register">Sign Up</a>
-                </span>
-            </p>
-        </section>
+                        <button>Sign In</button>
+                    </form>
+                    <p>
+                        Need an Account?<br />
+                        <span className="line">
+                            {/*put router link here*/}
+                            <a href="/register">Sign Up</a>
+                        </span>
+                    </p>
+                </section>
 
+            }
+        </>
     )
 }
 
